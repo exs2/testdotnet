@@ -46,6 +46,7 @@ namespace API.UnitTest.Models
       Assert.That(ex.ParamName, Is.EqualTo("toNodeName"));
     }
 
+    [Test]
     public void GetPossibleRouteCount_SimpleGraphABCD_From_A_To_D_Returns1(){
       Graph graph = CreateSimpleGraph();
 
@@ -64,46 +65,46 @@ namespace API.UnitTest.Models
     }
 
     [Test]
-    public void GetPossibleRouteCount_SimpleGraphABCD_From_A_To_D_Maximum3Nodes_Returns0(){
+    public void GetPossibleRouteCount_SimpleGraphABCD_From_A_To_D_Maximum2Legs_Returns0(){
+      Graph graph = CreateSimpleGraph();
+
+      int routeCount = graph.GetPossibleRouteCount("A", "D", true, 2);
+
+      Assert.That(routeCount, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void GetPossibleRouteCount_SimpleGraphABCD_From_A_To_D_Maximum3Legs_Returns1(){
       Graph graph = CreateSimpleGraph();
 
       int routeCount = graph.GetPossibleRouteCount("A", "D", true, 3);
 
-      Assert.That(routeCount, Is.EqualTo(0));
+      Assert.That(routeCount, Is.EqualTo(1));
     }
 
     [Test]
-    public void GetPossibleRouteCount_SimpleGraphABCD_From_A_To_D_Maximum4Nodes_Returns1(){
+    public void GetPossibleRouteCount_SimpleGraphABCD_From_A_To_D_Maximum99Legs_Returns1(){
       Graph graph = CreateSimpleGraph();
 
-      int routeCount = graph.GetPossibleRouteCount("A", "D", true, 4);
+      int routeCount = graph.GetPossibleRouteCount("A", "D", true, 99);
 
       Assert.That(routeCount, Is.EqualTo(1));
     }
 
     [Test]
-    public void GetPossibleRouteCount_SimpleGraphABCD_From_A_To_D_Maximum100Nodes_Returns1(){
-      Graph graph = CreateSimpleGraph();
-
-      int routeCount = graph.GetPossibleRouteCount("A", "D", true, 100);
-
-      Assert.That(routeCount, Is.EqualTo(1));
-    }
-
-    [Test]
-    public void GetPossibleRouteCount_SimpleGraphABCD_From_A_To_D_MaximunCost29_Returns0(){
-      Graph graph = CreateSimpleGraph();
-
-      int routeCount = graph.GetPossibleRouteCount("A", "D", true, 0, 29);
-
-      Assert.That(routeCount, Is.EqualTo(0));
-    }
-
-    [Test]
-    public void GetPossibleRouteCount_SimpleGraphABCD_From_A_To_D_MaximunCost30_Returns1(){
+    public void GetPossibleRouteCount_SimpleGraphABCD_From_A_To_D_MaximumCost30_Returns0(){
       Graph graph = CreateSimpleGraph();
 
       int routeCount = graph.GetPossibleRouteCount("A", "D", true, 0, 30);
+
+      Assert.That(routeCount, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void GetPossibleRouteCount_SimpleGraphABCD_From_A_To_D_MaximumCost31_Returns1(){
+      Graph graph = CreateSimpleGraph();
+
+      int routeCount = graph.GetPossibleRouteCount("A", "D", true, 0, 31);
 
       Assert.That(routeCount, Is.EqualTo(1));
     }
@@ -143,37 +144,37 @@ namespace API.UnitTest.Models
     }
 
     [Test]
-    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_Maximum4Nodes_Returns0(){
+    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_Maximum3Legs_Returns0(){
       Graph graph = CreateCircularGraph();
 
-      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 4);
+      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 3);
 
       Assert.That(routeCount, Is.EqualTo(0));
     }
 
     [Test]
-    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_Maximum5Nodes_Returns1(){
+    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_Maximum4Legs_Returns1(){
       Graph graph = CreateCircularGraph();
 
-      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 5);
+      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 4);
 
       Assert.That(routeCount, Is.EqualTo(1));
     }
 
     [Test]
-    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_Maximum9Nodes_Returns2(){
+    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_Maximum8Legs_Returns2(){
       Graph graph = CreateCircularGraph();
 
-      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 9);
+      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 8);
 
       Assert.That(routeCount, Is.EqualTo(2));
     }
 
     [Test]
-    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_Maximum17Nodes_Returns4(){
+    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_Maximum16Legs_Returns4(){
       Graph graph = CreateCircularGraph();
 
-      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 17);
+      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 16);
 
       Assert.That(routeCount, Is.EqualTo(4));
     }
@@ -188,24 +189,25 @@ namespace API.UnitTest.Models
     }
 
     [Test]
-    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_MaximumCost49_Returns0(){
+    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_MaximumCost50_Returns0(){
       Graph graph = CreateCircularGraph();
 
-      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 0, 30);
+      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 0, 50);
 
       Assert.That(routeCount, Is.EqualTo(0));
     }
 
 
     [Test]
-    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_MaximumCost50_Returns1(){
+    public void GetPossibleRouteCount_CircularGraphABCDA_From_A_To_A_MaximumCost51_Returns1(){
       Graph graph = CreateCircularGraph();
 
-      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 0, 50);
+      int routeCount = graph.GetPossibleRouteCount("A", "A", true, 0, 51);
 
       Assert.That(routeCount, Is.EqualTo(1));
     }
 
+    [Test]
     public void GetPossibleRouteCount_ComplexGraph_From_A_To_D_NoRepeatedRoute_MaximumCost1000_Returns10(){
       Graph graph = CreateComplexGraph();
 
@@ -214,14 +216,16 @@ namespace API.UnitTest.Models
       Assert.That(routeCount, Is.EqualTo(10));
     }
 
-    public void GetPossibleRouteCount_ComplexGraph_From_G_To_E_NoRepeatedRoute_Maximum7Legs_Returns12(){
+    [Test]
+    public void GetPossibleRouteCount_ComplexGraph_From_G_To_E_Maximum7Legs_Returns12(){
       Graph graph = CreateComplexGraph();
 
-      int routeCount = graph.GetPossibleRouteCount("G", "E", true, 8);
+      int routeCount = graph.GetPossibleRouteCount("G", "E", true, 7);
 
-      Assert.That(routeCount, Is.EqualTo(10));
+      Assert.That(routeCount, Is.EqualTo(12));
     }
 
+    [Test]
     public void GetPossibleRouteCount_ComplexGraph_From_A_To_C_NoRepeatedRoute_Returns95(){
       Graph graph = CreateComplexGraph();
 
@@ -230,7 +234,8 @@ namespace API.UnitTest.Models
       Assert.That(routeCount, Is.EqualTo(95));
     }
 
-    public void GetPossibleRouteCount_ComplexGraph_From_A_To_D_NoRepeatedRoute_MaximumCost1200_Returns117(){
+    [Test]
+    public void GetPossibleRouteCount_ComplexGraph_From_E_To_E_MaximumCost1200_Returns117(){
       Graph graph = CreateComplexGraph();
 
       int routeCount = graph.GetPossibleRouteCount("E", "E", true, 0, 1200);
@@ -293,6 +298,7 @@ namespace API.UnitTest.Models
         new Route("B", "E", 80),
         new Route("C", "B", 220),
         new Route("C", "G", 350),
+        new Route("D", "I", 120),
         new Route("E", "A", 70),
         new Route("E", "C", 85),
         new Route("F", "A", 230),

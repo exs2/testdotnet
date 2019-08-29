@@ -229,6 +229,7 @@ namespace API.UnitTest.Models{
         new Route("B", "E", 80),
         new Route("C", "B", 220),
         new Route("C", "G", 350),
+        new Route("D", "I", 120),
         new Route("E", "A", 70),
         new Route("E", "C", 85),
         new Route("F", "A", 230),

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace API.Models{
   public class Graph{
     public Dictionary<string, Node> Nodes { get; private set; }
-    public const int maxCostLimit = 99999;
-    public const int maxNodeLimit = 1000;
+    public const int maxCostLimit = 50000;
+    public const int maxLegLimit = 1000;
 
     public Graph(){
       Nodes = new Dictionary<string, Node>();
@@ -63,7 +63,7 @@ namespace API.Models{
       return totalCost;
     }
 
-    public int GetPossibleRouteCount(string fromNodeName, string toNodeName, bool allowRepeatedRoute = true, int nodeCountLimit = 0, int costLimit = 0){
+    public int GetPossibleRouteCount(string fromNodeName, string toNodeName, bool allowRepeatedRoute = true, int legCountLimit = 0, int costLimit = 0){
       if(fromNodeName is null){
         throw new ArgumentNullException(nameof(fromNodeName));
       }
@@ -76,46 +76,46 @@ namespace API.Models{
       if(!Nodes.ContainsKey(toNodeName)){
         throw new ArgumentException("toNodeName is not in the graph", nameof(toNodeName));
       }
-      if(allowRepeatedRoute && nodeCountLimit == 0 && costLimit == 0){
+      if(allowRepeatedRoute && legCountLimit == 0 && costLimit == 0){
         throw new ArgumentException("Put at least 1 constraints to avoid infinite loop");
       }
-      if(allowRepeatedRoute && nodeCountLimit > maxNodeLimit && costLimit > maxCostLimit){
+      if(allowRepeatedRoute && legCountLimit > maxLegLimit && costLimit > maxCostLimit){
         throw new ArgumentException("Limit is too high");
       }
 
-      nodeCountLimit = nodeCountLimit == 0 ? maxNodeLimit : nodeCountLimit;
+      legCountLimit = legCountLimit == 0 ? maxLegLimit : legCountLimit;
       costLimit = costLimit == 0 ? maxCostLimit : costLimit;
 
-      return RecursivelyCountRoutes(fromNodeName, toNodeName, allowRepeatedRoute, nodeCountLimit, costLimit, new List<string>(){ fromNodeName });
+      return RecursivelyCountRoutes(fromNodeName, toNodeName, allowRepeatedRoute, legCountLimit, costLimit, new List<string>(){ fromNodeName });
     }
 
-    private int RecursivelyCountRoutes(string currentNodeName, string toNodeName, bool allowRepeatedRoute, int nodeCountLimit, int costLimit, List<string> currentPath){
+    private int RecursivelyCountRoutes(string currentNodeName, string toNodeName, bool allowRepeatedRoute, int legCountLimit, int costLimit, List<string> currentPath){
       Node currentNode = Nodes[currentNodeName];
       int routeCount = 0;
-      foreach(string nodeName in currentPath){
-        Console.Write(nodeName + " => ");
+
+      // terminal conditions
+      if(CalculateCostGivenPath(currentPath) >= costLimit){
+        return 0;
       }
-      Console.WriteLine();
+      else if(currentPath.Count-1 > legCountLimit){
+        return 0;
+      }
+      else if(!allowRepeatedRoute && IsThePathRepeated(currentPath)){
+        return 0;
+      }
+      else if(currentPath.Count > 1 && currentNode.Name == toNodeName){
+        foreach(string node in currentPath){
+          Console.Write(node + "=>");
+        }
+        Console.WriteLine();
+        routeCount++;
+      }
 
       foreach(Route route in currentNode.Routes.Values){
         List<string> nextPath = new List<string>(currentPath);
         nextPath.Add(route.To);
 
-        // terminal conditions
-        if(CalculateCostGivenPath(nextPath) > costLimit){
-          return 0;
-        }
-        else if(nextPath.Count > nodeCountLimit){
-          return 0;
-        }
-        else if(!allowRepeatedRoute && IsThePathRepeated(nextPath)){
-          return 0;
-        }
-        else if(route.To == toNodeName){
-          return 1 + RecursivelyCountRoutes(route.To, toNodeName, allowRepeatedRoute, nodeCountLimit, costLimit, nextPath);
-        }
-
-        routeCount += RecursivelyCountRoutes(route.To, toNodeName, allowRepeatedRoute, nodeCountLimit, costLimit, nextPath);
+        routeCount += RecursivelyCountRoutes(route.To, toNodeName, allowRepeatedRoute, legCountLimit, costLimit, nextPath);
       }
 
       return routeCount;

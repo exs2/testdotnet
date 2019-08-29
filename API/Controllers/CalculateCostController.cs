@@ -16,11 +16,17 @@ namespace API.Controllers
     {
       Graph graph = new Graph();
       graph.AddRoutes(request.Routes);
+      int cost = 0;
 
-      return graph.CalculateCostGivenPath(request.Path);
+      try{
+        cost = graph.CalculateCostGivenPath(request.Path);
+      }
+      catch (ArgumentException ex){
+        return BadRequest(ex.Message);
+      }
+
+      return Ok(cost);
     }
-
-
   }
   
   public class CalculateCostRequest{
