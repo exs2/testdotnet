@@ -104,10 +104,6 @@ namespace API.Models{
         return 0;
       }
       else if(currentPath.Count > 1 && currentNode.Name == toNodeName){
-        foreach(string node in currentPath){
-          Console.Write(node + "=>");
-        }
-        Console.WriteLine();
         routeCount++;
       }
 
@@ -152,12 +148,6 @@ namespace API.Models{
       }
 
       Dictionary<string,Dictionary<string,int>> cheapestCostTable = constructCheapestCostTable();
-
-      foreach(string from in cheapestCostTable.Keys){
-        foreach(string to in cheapestCostTable.Keys){
-          Console.WriteLine(from + " => " + to + " = " + cheapestCostTable[from][to]);
-        }
-      }
       
       int cheapestCost = cheapestCostTable[fromNodeName][toNodeName];
       if(cheapestCost == int.MaxValue){
